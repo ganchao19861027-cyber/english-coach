@@ -1,0 +1,28 @@
+{
+  "id": "english-coach-180",
+  "name": "英语教练 · English Coach",
+  "short_name": "英语教练",
+  "description": "180天英语口语教练：场景对话、跟读、单词记忆、点读翻译、趣味闯关，含暖通空调与楼宇自控专业英语。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "./index.html?src=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait",
+  "background_color": "#0B1220",
+  "theme_color": "#0E7C66",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    { "name": "今日任务", "url": "./index.html#/today", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "开始跟读", "url": "./index.html#/speak", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "复习单词", "url": "./index.html#/words/review", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "专业英语", "url": "./index.html#/pro", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
