@@ -4,6 +4,12 @@
 面向「有一点基础、但开不了口」的学习者，用 180 天把日常口语和
 暖通空调（HVAC）／楼宇自控（BAS）专业英语一起练起来。
 
+## 在线地址（iPhone 上打开这个）
+
+**https://ganchao19861027-cyber.github.io/english-coach/**
+
+同目录下的 `安装二维码.png` 可以直接用 iPhone 相机扫码打开。
+
 ## 30 秒开始
 
 1. 用 **iPhone Safari** 打开应用地址（或用电脑双击 `启动本地预览.command`）。
@@ -42,6 +48,7 @@ js/data/              课程内容（词库、对话、句型、专业资料、1
 js/views/             七个主页面
 icons/                应用图标与 iOS 启动图
 tools/                本地预览服务器、发布脚本
+docs/                 安装指南与界面截图
 ```
 
 ## 本地开发
@@ -58,6 +65,9 @@ node tools/serve.mjs 8788      # 打开 http://localhost:8788/
 ```bash
 bash tools/deploy-pages.sh english-coach
 ```
+
+当前线上地址即由该脚本发布（仓库：`ganchao19861027-cyber/english-coach`）。
+不想保留时，执行 `gh repo delete ganchao19861027-cyber/english-coach` 即可删除。
 
 ## 说明
 
