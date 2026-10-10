@@ -1,5 +1,5 @@
 /* 今日：每日任务、连胜、经验、快速入口 */
-import { icon, ring, bar, section, toast } from '../core/ui.js';
+import { icon, ring, bar, section, toast, mascot } from '../core/ui.js';
 import { esc, fmtDate, dayKey, pct } from '../core/util.js';
 import {
   getState, levelInfo, levelTitle, planDay, taskDone, markTask,
@@ -69,6 +69,7 @@ export const render = () => {
           <div class="today-stat__k">${esc(levelTitle(lv.level))}</div>
         </div>
       </div>
+      <div style="flex:none;margin-left:auto">${mascot({ size: 62, mood: doneCount > 0 ? 'happy' : 'idle' })}</div>
     </div>
     <div class="week-strip">
       ${weekDays.map((d) => {
