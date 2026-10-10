@@ -18,6 +18,7 @@ export const DEFAULT_SETTINGS = {
   sound: true,
   goalPerDay: 1,
   onlineLookup: true,
+  humanVoice: true,
   theme: 'auto',
   hapticsOn: true,
 };

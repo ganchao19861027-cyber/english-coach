@@ -1,5 +1,5 @@
 /* 词库：SRS 记忆卡、新词学习、拼写练习、生词本 */
-import { $, icon, bar, ring, sheet, toast, celebrate } from '../core/ui.js';
+import { $, icon, bar, ring, sheet, toast, celebrate, mascot } from '../core/ui.js';
 import { esc, pct, sample, shuffle } from '../core/util.js';
 import {
   getState, deckStats, dueList, newList, gradeCard, markTask, recordAnswer,
@@ -239,7 +239,7 @@ export const renderSessionDone = () => {
   const acc = s.results.length ? s.results.filter((r) => r.g >= 2).length / s.results.length : 0;
   return `
   <section class="section" style="margin-top:20px;text-align:center">
-    <div style="font-size:56px;line-height:1">${acc > 0.8 ? '🎯' : acc > 0.5 ? '👍' : '💪'}</div>
+    <div style="display:grid;justify-items:center">${mascot({ size: 100, mood: acc > 0.6 ? 'happy' : 'idle' })}</div>
     <h2 class="section__title" style="margin-top:10px">本轮完成</h2>
     <p class="small muted" style="margin-top:6px">复习 ${total} 个词 · 记得 ${s.results.filter((r) => r.g >= 2).length} 个 · 需要加强 ${s.results.filter((r) => r.g === 0).length} 个</p>
     <div class="grid c3" style="margin-top:18px">

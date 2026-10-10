@@ -7,6 +7,7 @@ import {
 } from '../core/store.js';
 import { WORDS, WORDS_BY_DECK, DECKS, stats as contentStats, PLAN_DAYS, DIALOGUES, METHODS, PATTERNS, CONCEPTS, TALKS, FAQ } from '../data/index.js';
 import { loadVoices, getVoices, speak, ttsSupported, asrSupported, micSupported } from '../core/speech.js';
+import { clipState } from '../core/audio.js';
 
 const s = () => getState();
 const S = () => getState().settings;
@@ -278,6 +279,13 @@ export const renderSettings = () => {
   <section class="section" style="margin-top:4px">
     <div class="section__head"><h2 class="section__title sm">发音</h2></div>
     <div class="list">
+      <label class="list__row">
+        <span style="flex:1">
+          <span class="list__title" style="display:block">真人发音（本地神经语音）</span>
+          <span class="list__sub" style="display:block">内置 ${clipState().human || 2000}+ 条离线音频，关闭后使用系统语音朗读</span>
+        </span>
+        <input type="checkbox" id="humanVoice" ${st.humanVoice ? 'checked' : ''} style="width:22px;height:22px;accent-color:var(--tint)">
+      </label>
       <div class="list__row" style="flex-direction:column;align-items:stretch;gap:8px">
         <div class="row"><span class="small" style="font-weight:600">${icon('volume-2')} 朗读声音</span></div>
         <select id="voice" style="border:1px solid var(--line);border-radius:var(--r);height:40px;padding:0 10px;background:var(--surface);font-size:15px">
@@ -446,6 +454,7 @@ export const renderAbout = () => {
         · 课程设计遵循<b>刻意练习</b>：明确目标、即时反馈、专注重复、难度递进。<br>
         · 单词采用<b>间隔重复（SRS）</b>，跟读提供逐句评分，复盘日用于巩固。<br>
         · 专业模块（暖通空调、楼宇自控）为通用行业英语学习资料，产品名称与参数请以厂商官方最新资料为准。<br>
+        · 发音音频由本地神经语音引擎 <b>Piper</b>（MIT）配合 <b>LJSpeech</b>（公有领域）音色离线生成，可随应用分发；未收录的句子自动回退到系统语音。<br>
         · 语音朗读由系统语音引擎提供，离线可用；语音识别评分需要开启 iOS 键盘听写功能。
       </div>
     </div>
@@ -568,7 +577,7 @@ export const mountMe = (root, ctx) => {
   if (accent) accent.onchange = () => updateSettings({ accent: accent.value });
   root.querySelector('[data-test-voice]')?.addEventListener('click', () => speak('This is how your English coach sounds. Let us start today.', { rate: S().rate, accent: S().accent, voiceURI: S().voiceURI }));
 
-  [['#autoPlay', 'autoPlay'], ['#tapLook', 'tapLook'], ['#onlineLookup', 'onlineLookup'], ['#showZh', 'showZh']].forEach(([sel, key]) => {
+  [['#autoPlay', 'autoPlay'], ['#tapLook', 'tapLook'], ['#onlineLookup', 'onlineLookup'], ['#showZh', 'showZh'], ['#humanVoice', 'humanVoice']].forEach(([sel, key]) => {
     const el = g(sel);
     if (el) el.onchange = () => updateSettings({ [key]: el.checked });
   });

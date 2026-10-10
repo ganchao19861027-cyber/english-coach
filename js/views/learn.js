@@ -108,6 +108,27 @@ export const renderPlan = () => {
       </div>
     </div>
   </section>
+  <section class="section">
+    <div class="section__head"><h2 class="section__title">本周路径</h2>
+      <span class="section__more">第 ${planForDay(day).week} 周${icon('route')}</span></div>
+    <div class="path">
+      <div class="path__line"></div>
+      ${Array.from({ length: 7 }, (_, i) => Math.floor((day - 1) / 7) * 7 + 1 + i)
+        .filter((d) => d <= 180)
+        .map((d) => {
+          const rec = getState().days[planDayDate(d)];
+          const done = !!(rec && Object.keys(rec.tasks || {}).length > 0);
+          const cls = d === day ? 'today' : done ? 'done' : 'locked';
+          return `<button class="path__node ${cls}" data-nav="#/learn/plan/${d}">
+            <span class="path__bubble">${done && d !== day ? icon('check') : d}</span>
+            <span class="path__meta">
+              <span class="path__title" style="display:block">${esc(planForDay(d).focus)}</span>
+              <span class="path__sub" style="display:block">第 ${d} 天 · ${d === day ? '今天' : done ? '已完成' : '待开始'}</span>
+            </span>
+          </button>`;
+        }).join('')}
+    </div>
+  </section>
   ${PHASES.map((p) => {
     const active = day >= p.range[0] && day <= p.range[1];
     const done = day > p.range[1];

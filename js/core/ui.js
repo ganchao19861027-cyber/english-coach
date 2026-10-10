@@ -189,3 +189,73 @@ export const celebrate = (node) => {
   burst(r ? r.left + r.width / 2 : innerWidth / 2, r ? r.top + r.height / 2 : innerHeight / 2);
   haptic([10, 40, 14]);
 };
+
+/* ---------- 小语：应用自己的角色（气泡造型，非任何现成吉祥物） ---------- */
+let mascotSeq = 0;
+export const mascot = ({ size = 72, mood = 'idle', cls = '' } = {}) => {
+  const id = `mg${++mascotSeq}`;
+  const happy = mood === 'happy';
+  const eyes = happy
+    ? `<path d="M36 50c4-6 12-6 16 0" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>
+       <path d="M68 50c4-6 12-6 16 0" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>`
+    : `<ellipse cx="44" cy="50" rx="9" ry="10" fill="#fff"/>
+       <ellipse cx="76" cy="50" rx="9" ry="10" fill="#fff"/>
+       <circle cx="45" cy="51" r="4.4" fill="#0B1524"/>
+       <circle cx="77" cy="51" r="4.4" fill="#0B1524"/>`;
+  const mouth = happy
+    ? `<path d="M44 68c5 9 27 9 32 0" stroke="#fff" stroke-width="5.4" stroke-linecap="round" fill="none"/>`
+    : `<path d="M48 70c4 5 20 5 24 0" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none"/>`;
+  return `<svg class="mascot ${happy ? 'mascot--happy' : 'mascot--idle'} ${cls}" width="${size}" height="${size}" viewBox="0 0 120 120" aria-hidden="true">
+    <defs>
+      <linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#57B0FF"/><stop offset="1" stop-color="#0A84FF"/>
+      </linearGradient>
+    </defs>
+    <path d="M26 16h68a16 16 0 0 1 16 16v42a16 16 0 0 1-16 16H56l-20 17V90H26A16 16 0 0 1 10 74V32A16 16 0 0 1 26 16z" fill="url(#${id})"/>
+    <circle cx="26" cy="66" r="4.2" fill="#FF9DB0" opacity=".7"/>
+    <circle cx="94" cy="66" r="4.2" fill="#FF9DB0" opacity=".7"/>
+    ${eyes}
+    ${mouth}
+    ${happy ? `<path d="M104 20l2.6 6.4L113 29l-6.4 2.6L104 38l-2.6-6.4L95 29l6.4-2.6z" fill="#FFC53D"/>` : ''}
+  </svg>`;
+};
+
+/* ---------- 星级 ---------- */
+export const stars = (n, total = 3) =>
+  `<div class="celebrate__stars">${Array.from({ length: total }, (_, i) =>
+    `<svg class="${i < n ? 'on' : 'off'}" viewBox="0 0 24 24" fill="${i < n ? 'currentColor' : 'none'}"
+      stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5 6.1 20.6l1.2-6.5L2.5 9.5l6.6-.9z"/></svg>`).join('')}</div>`;
+
+/* ---------- 答题反馈条（Duolingo 式节奏） ---------- */
+let feedbackNode = null;
+export const closeFeedback = () => {
+  if (!feedbackNode) return;
+  const node = feedbackNode;
+  feedbackNode = null;
+  node.classList.remove('show');
+  document.body.classList.remove('feedback-open');
+  setTimeout(() => node.remove(), 420);
+};
+
+export const openFeedback = ({ ok = true, title = '', body = '', action = '继续', onAction }) => {
+  closeFeedback();
+  const node = el(`<div class="feedback ${ok ? 'ok' : 'no'}">
+    <div class="feedback__head">
+      ${icon(ok ? 'circle-check' : 'circle-x')}
+      <span class="feedback__title">${esc(title)}</span>
+    </div>
+    ${body ? `<div class="feedback__body">${body}</div>` : ''}
+    <div class="feedback__actions">
+      <button class="btn primary block" data-feedback-action>${esc(action)}</button>
+    </div>
+  </div>`);
+  document.body.appendChild(node);
+  document.body.classList.add('feedback-open');
+  requestAnimationFrame(() => node.classList.add('show'));
+  node.querySelector('[data-feedback-action]').addEventListener('click', () => {
+    closeFeedback();
+    onAction?.();
+  });
+  feedbackNode = node;
+  return node;
+};

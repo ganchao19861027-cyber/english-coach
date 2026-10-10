@@ -1,5 +1,5 @@
 /* 闯关：7 种由内容库实时生成的题目 */
-import { $, icon, bar, ring, toast, celebrate } from '../core/ui.js';
+import { $, icon, bar, ring, toast, celebrate, openFeedback, closeFeedback, mascot, stars as starsRow } from '../core/ui.js';
 import { esc, clamp, mmss, shuffle, wordsOnly } from '../core/util.js';
 import { getState, addXP, markTask, recordAnswer, touchDay, bumpProgress, planDay } from '../core/store.js';
 import { GAMES, gameById, buildSet, buildMixed, spellingCheck, starsFor } from '../core/games.js';
@@ -203,7 +203,6 @@ const afterHtml = (q) => {
     ${q.word?.ex ? `<div class="tiny muted" style="margin-top:6px">${renderSentence(q.word.ex)}</div>` : ''}
     <div class="row" style="gap:8px;margin-top:12px">
       <button class="btn sm soft" data-play2>${icon('volume-2')}再听一次</button>
-      <button class="btn sm primary" style="flex:1" data-next-q>${icon('arrow-right')}下一题</button>
     </div>
   </div>`;
 };
@@ -214,10 +213,12 @@ export const renderResult = () => {
   const acc = total ? Math.round((game.correct / total) * 100) : 0;
   return `
   <section class="section" style="margin-top:18px;text-align:center">
-    <div style="font-size:56px;line-height:1">${stars === 3 ? '🏆' : stars === 2 ? '🎯' : stars === 1 ? '💪' : '🌱'}</div>
+    <div style="display:grid;justify-items:center">${mascot({ size: 104, mood: stars >= 2 ? 'happy' : 'idle' })}</div>
     <h2 class="section__title" style="margin-top:10px">${esc(game.kind === 'daily' ? '每日挑战完成' : gameById(game.kind)?.name + ' 完成')}</h2>
-    <div class="row" style="justify-content:center;gap:4px;margin-top:8px">
-      ${Array.from({ length: 3 }, (_, i) => icon('star', i < stars ? '' : 'chev')).join('')}
+    <div style="margin-top:10px">${starsRow(stars)}</div>
+    <div style="margin-top:14px">
+      <div class="celebrate__xp">+${game.correct * 10}</div>
+      <div class="celebrate__label">本局获得经验</div>
     </div>
     <div class="grid c3" style="margin-top:18px">
       <div class="stat"><div class="stat__v">${acc}%</div><div class="stat__k">正确率</div></div>
@@ -269,6 +270,8 @@ export const mountGame = (root, ctx) => {
   const q = game.qs[game.idx];
   const play = () => q.speak && say(q.speak);
   root.querySelectorAll('[data-play],[data-play2]').forEach((b) => b.onclick = play);
+  const showAnswer = (ok, title, body) =>
+    openFeedback({ ok, title, body, action: game.idx + 1 >= game.qs.length ? '看结果' : '继续', onAction: () => next(root, ctx) });
   if (S().autoPlay && q.speak && !game.played) { game.played = true; setTimeout(play, 260); }
 
   if (q.type === 'listen' || q.type === 'meaning' || q.type === 'respond') {
@@ -284,6 +287,12 @@ export const mountGame = (root, ctx) => {
       recordAnswer(ok, q.wordId, { game: game.kind, score: game.correct });
       play();
       ctx.rerender();
+      const detail = q.word
+        ? `<b>${esc(q.word.en)}</b> · ${esc(q.word.zh)}`
+        : q.type === 'respond'
+          ? `最合适的回应：${esc(q.options.find((o) => o.ok)?.text || '')}`
+          : '';
+      showAnswer(ok, ok ? (game.combo >= 3 ? `连击 ×${game.combo}` : '答对了') : '再记一次这个答案', detail);
     });
   }
 
@@ -306,6 +315,7 @@ export const mountGame = (root, ctx) => {
       else { game.wrong++; game.combo = 0; }
       recordAnswer(ok, q.wordId, { game: game.kind, score: game.correct });
       ctx.rerender();
+      showAnswer(ok, ok ? '拼写正确' : '正确拼写是', `<b>${esc(q.answer)}</b>`);
     });
     return;
   }
@@ -330,6 +340,7 @@ export const mountGame = (root, ctx) => {
       recordAnswer(ok, null, { game: game.kind, score: game.correct });
       say(q.answer);
       ctx.rerender();
+      showAnswer(ok, ok ? '语序正确' : '正确语序是', `<span class="en">${esc(q.answer)}</span>`);
     });
     return;
   }

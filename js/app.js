@@ -1,11 +1,12 @@
 /* 英语教练 · 应用外壳：路由、标签栏、引导流程、更新检查 */
-import { $, icon, on, sheet, toast, celebrate } from './core/ui.js';
+import { $, icon, on, sheet, toast, celebrate, closeFeedback, mascot } from './core/ui.js';
 import { esc, dayKey, haptic, isIOS, isStandalone, sleep } from './core/util.js';
 import {
   load, getState, save, updateSettings, updateProfile, planDay, taskDone,
   evaluateBadges, subscribe, addXP, markTask, touchDay, BADGES,
 } from './core/store.js';
 import { loadVoices, primeTTS } from './core/speech.js';
+import { warmAudio } from './core/audio.js';
 import { initTap } from './core/tap.js';
 import { stats as contentStats, planForDay, deckById } from './data/index.js';
 
@@ -147,6 +148,7 @@ const nav = (href, { replace = false, reload = false } = {}) => {
 const draw = () => {
   const r = parse();
   const route = routeToView(r);
+  closeFeedback();
   cleanup?.();
   cleanup = null;
 
@@ -245,9 +247,7 @@ const renderOnboarding = () => {
     const cs = contentStats();
     const head = `
       <div style="text-align:center;padding:8px 0 18px">
-        <div style="width:66px;height:66px;border-radius:19px;margin:0 auto;display:grid;place-items:center;background:var(--primary);color:#fff;box-shadow:var(--shadow-2)">
-          ${icon('graduation-cap')}
-        </div>
+        <div style="display:grid;justify-items:center">${mascot({ size: 96, mood: 'happy' })}</div>
         <h1 style="font-size:23px;font-weight:800;letter-spacing:-.03em;margin-top:14px">英语教练 · English Coach</h1>
         <p class="small muted" style="margin-top:6px">180 天，从"能看懂"到"能开口谈客户"</p>
       </div>`;
@@ -399,6 +399,7 @@ const boot = async () => {
   document.addEventListener('pointerdown', () => primeTTS(), { once: true, passive: true });
   document.addEventListener('touchend', () => primeTTS(), { once: true, passive: true });
   await loadVoices().catch(() => {});
+  warmAudio().catch(() => {});
   if (!getState().profile.onboarded) {
     renderOnboarding();
     $('#tabbar').innerHTML = '';

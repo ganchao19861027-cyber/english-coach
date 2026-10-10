@@ -1,4 +1,6 @@
 /* English Coach — TTS, speech recognition, recording */
+import { getState } from './store.js';
+import { audioUrlFor, loadAudioIndex, playClip, stopClip } from './audio.js';
 
 let voices = [];
 let voicesReady = false;
@@ -76,6 +78,7 @@ export const primeTTS = () => {
 
 export const stopSpeak = () => {
   speakToken++;
+  stopClip();
   if (!ttsSupported) return;
   try { speechSynthesis.cancel(); } catch {}
   currentUtter = null;
@@ -85,6 +88,38 @@ export const speak = (text, { rate = 0.95, accent = 'en-US', voiceURI = '', onEn
   if (!ttsSupported || !text) { onEnd?.(); return Promise.resolve(); }
   const my = ++speakToken;
   return new Promise((resolve) => {
+    const useHuman = () => {
+      const s = getState?.();
+      return !s || s.settings?.humanVoice !== false;
+    };
+    const words = String(text).trim().split(/\s+/).length;
+    const kind = words <= 3 && String(text).length <= 28 ? 'w' : 's';
+    if (useHuman()) {
+      loadAudioIndex()
+        .then(async () => {
+          if (my !== speakToken) { onEnd?.(); resolve(); return; }
+          const url = audioUrlFor(text, kind);
+          if (!url) { startTTS(); return; }
+          stopSpeakForClipOnly();
+          const played = await playClip(url, {
+            rate: rate < 0.85 ? 0.72 : rate > 1.05 ? 1.15 : 1,
+            onEnd,
+          });
+          if (played) { resolve(); return; }
+          startTTS();
+        })
+        .catch(() => startTTS());
+      return;
+    }
+    startTTS();
+
+    function stopSpeakForClipOnly() {
+      if (!ttsSupported) return;
+      try { speechSynthesis.cancel(); } catch {}
+      currentUtter = null;
+    }
+
+    function startTTS() {
     const finish = () => { if (my === speakToken) currentUtter = null; onEnd?.(); resolve(); };
     const start = () => {
       if (my !== speakToken) { onEnd?.(); resolve(); return; }
@@ -116,6 +151,7 @@ export const speak = (text, { rate = 0.95, accent = 'en-US', voiceURI = '', onEn
       setTimeout(start, 120); // 关键：不在 cancel 的同一帧调用 speak
     } else {
       start();
+    }
     }
   });
 };

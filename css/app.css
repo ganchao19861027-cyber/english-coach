@@ -10,38 +10,48 @@
    so hierarchy stays legible at arm's length.
    ============================================================ */
 :root {
-  --bg: #F1F4F2;
-  --bg-blur: rgba(241, 244, 242, .78);
+  /* sky-blue base: iOS system blue reads as 天蓝 on a light material */
+  --bg: #EEF3FA;
+  --bg-blur: rgba(238, 243, 250, .72);
   --surface: #FFFFFF;
-  --surface-2: #E8EDEB;
-  --surface-3: #DEE5E2;
-  --surface-inset: #E6EBE9;
-  --ink: #0C1A16;
-  --ink-2: #33443F;
-  --muted: #687974;
-  --muted-2: #94A39E;
-  --line: rgba(12, 26, 22, .10);
-  --line-2: rgba(12, 26, 22, .17);
-  --tint: #157A66;
-  --tint-strong: #0C6353;
-  --tint-soft: #E3F1ED;
+  --surface-2: #E4EBF5;
+  --surface-3: #D6E0EE;
+  --surface-inset: #E1E8F3;
+  --ink: #0B1524;
+  --ink-2: #33415A;
+  --muted: #61708A;
+  --muted-2: #8E9CB4;
+  --line: rgba(11, 21, 36, .10);
+  --line-2: rgba(11, 21, 36, .18);
+  --tint: #0A84FF;
+  --tint-strong: #0060DF;
+  --tint-edge: #0064D2;
+  --tint-soft: #E7F2FF;
   --tint-ink: #FFFFFF;
-  --red: #C2483D;
-  --red-soft: #FBEAE7;
-  --orange: #AD7223;
-  --orange-soft: #FAF0E0;
-  --green: #2C7C58;
-  --green-soft: #E5F2EB;
-  --cat-core: #157A66;
-  --cat-core-soft: #E3F1ED;
-  --cat-social: #3D6E8F;
-  --cat-social-soft: #E7EFF5;
-  --cat-work: #8F6529;
-  --cat-work-soft: #F7EFE2;
-  --cat-hvac: #2F7A5C;
-  --cat-hvac-soft: #E5F2EB;
-  --cat-bas: #575FA6;
-  --cat-bas-soft: #EAEBF8;
+  --red: #D9463C;
+  --red-soft: #FDECEA;
+  --orange: #C4761A;
+  --orange-soft: #FDF2E3;
+  --green: #1E9E5A;
+  --green-soft: #E7F7EE;
+  --cat-core: #0A84FF;
+  --cat-core-soft: #E7F2FF;
+  --cat-social: #5E5CE6;
+  --cat-social-soft: #EDEDFE;
+  --cat-work: #C4761A;
+  --cat-work-soft: #FDF2E3;
+  --cat-hvac: #0E9AA7;
+  --cat-hvac-soft: #E2F5F7;
+  --cat-bas: #A05BD0;
+  --cat-bas-soft: #F5EAFB;
+  /* frosted-glass material */
+  --glass: rgba(255, 255, 255, .58);
+  --glass-strong: rgba(255, 255, 255, .74);
+  --glass-edge: rgba(255, 255, 255, .62);
+  --glass-blur: blur(20px) saturate(180%);
+  --wash: radial-gradient(120% 52% at 50% -6%, rgba(10, 132, 255, .22), rgba(10, 132, 255, 0) 62%),
+          radial-gradient(90% 42% at 100% 4%, rgba(94, 92, 230, .13), rgba(94, 92, 230, 0) 58%),
+          radial-gradient(80% 40% at 0% 22%, rgba(14, 154, 167, .10), rgba(14, 154, 167, 0) 60%);
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
   --fs-display: 34px;
@@ -88,10 +98,10 @@
   --r-card: 10px;
   --r-inner: 8px;
   --r-pill: 999px;
-  --shadow-card: 0 .5px 1px rgba(9, 30, 25, .05), 0 10px 24px -18px rgba(9, 30, 25, .22);
-  --shadow-raised: 0 1px 2px rgba(9, 30, 25, .06), 0 18px 40px -22px rgba(9, 30, 25, .30);
-  --shadow-sheet: 0 -12px 48px rgba(6, 22, 18, .22);
-  --ring-inset: inset 0 0 0 .5px rgba(255, 255, 255, .55);
+  --shadow-card: 0 .5px 1px rgba(12, 40, 80, .05), 0 14px 32px -22px rgba(12, 40, 80, .40);
+  --shadow-raised: 0 1px 2px rgba(12, 40, 80, .07), 0 22px 46px -26px rgba(12, 40, 80, .48);
+  --shadow-sheet: 0 -12px 48px rgba(12, 40, 80, .28);
+  --ring-inset: inset 0 .5px 0 var(--glass-edge), inset 0 0 0 .5px rgba(255, 255, 255, .30);
   --ease-ios: cubic-bezier(.32, .72, 0, 1);
   --ease-out: cubic-bezier(.16, 1, .3, 1);
   --ease-in-out: cubic-bezier(.4, 0, .2, 1);
@@ -125,42 +135,49 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0A100F;
-    --bg-blur: rgba(10, 16, 15, .76);
-    --surface: #131B19;
-    --surface-2: #1B2422;
-    --surface-3: #222D2A;
-    --surface-inset: #1E2725;
-    --ink: #E9EFED;
-    --ink-2: #C3D0CC;
-    --muted: #92A19C;
-    --muted-2: #75847F;
-    --line: rgba(233, 239, 237, .10);
-    --line-2: rgba(233, 239, 237, .18);
-    --tint: #48C0A3;
-    --tint-strong: #6AD2B7;
-    --tint-soft: #12312A;
-    --tint-ink: #04130F;
-    --red: #E0786C;
-    --red-soft: #331C19;
-    --orange: #DBA45C;
+    --bg: #070C16;
+    --bg-blur: rgba(7, 12, 22, .72);
+    --surface: #111A2A;
+    --surface-2: #1A2437;
+    --surface-3: #22304A;
+    --surface-inset: #1B2538;
+    --ink: #E9EFFA;
+    --ink-2: #C2CDE2;
+    --muted: #93A2BC;
+    --muted-2: #76849C;
+    --line: rgba(233, 239, 250, .10);
+    --line-2: rgba(233, 239, 250, .18);
+    --tint: #4AA8FF;
+    --tint-strong: #7CC0FF;
+    --tint-edge: #0B5FB0;
+    --tint-soft: #0C2A44;
+    --tint-ink: #04121F;
+    --red: #F0715F;
+    --red-soft: #3A1C18;
+    --orange: #E0A45C;
     --orange-soft: #33260F;
-    --green: #58BE8E;
-    --green-soft: #122E22;
-    --cat-core: #48C0A3;
-    --cat-core-soft: #12312A;
-    --cat-social: #79A8C9;
-    --cat-social-soft: #16242E;
-    --cat-work: #CBA061;
-    --cat-work-soft: #2C2317;
-    --cat-hvac: #58BE8E;
-    --cat-hvac-soft: #122E22;
-    --cat-bas: #9AA0E0;
-    --cat-bas-soft: #1E2036;
-    --shadow-card: 0 .5px 1px rgba(0, 0, 0, .5), 0 12px 28px -20px rgba(0, 0, 0, .8);
-    --shadow-raised: 0 1px 2px rgba(0, 0, 0, .55), 0 20px 44px -24px rgba(0, 0, 0, .85);
-    --shadow-sheet: 0 -12px 48px rgba(0, 0, 0, .6);
-    --ring-inset: inset 0 0 0 .5px rgba(255, 255, 255, .06);
+    --green: #46C48A;
+    --green-soft: #123122;
+    --cat-core: #4AA8FF;
+    --cat-core-soft: #0C2A44;
+    --cat-social: #918FF5;
+    --cat-social-soft: #1D1E3D;
+    --cat-work: #E0A45C;
+    --cat-work-soft: #33260F;
+    --cat-hvac: #4FC3D0;
+    --cat-hvac-soft: #0F2E33;
+    --cat-bas: #C489E8;
+    --cat-bas-soft: #2A1C38;
+    --glass: rgba(20, 30, 48, .60);
+    --glass-strong: rgba(20, 30, 48, .78);
+    --glass-edge: rgba(255, 255, 255, .10);
+    --wash: radial-gradient(120% 52% at 50% -6%, rgba(74, 168, 255, .20), rgba(74, 168, 255, 0) 60%),
+            radial-gradient(90% 42% at 100% 4%, rgba(145, 143, 245, .14), rgba(145, 143, 245, 0) 58%),
+            radial-gradient(80% 40% at 0% 22%, rgba(79, 195, 208, .10), rgba(79, 195, 208, 0) 60%);
+    --shadow-card: 0 .5px 1px rgba(0, 0, 0, .5), 0 16px 34px -24px rgba(0, 0, 0, .9);
+    --shadow-raised: 0 1px 2px rgba(0, 0, 0, .55), 0 24px 50px -28px rgba(0, 0, 0, .95);
+    --shadow-sheet: 0 -12px 48px rgba(0, 0, 0, .65);
+    --ring-inset: inset 0 .5px 0 var(--glass-edge), inset 0 0 0 .5px rgba(255, 255, 255, .04);
   }
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -707,4 +724,164 @@ a { color: var(--tint); text-decoration: none; }
   .view { width: 100%; max-width: 640px; margin: 0 auto; }
   .appbar { width: 100%; max-width: 640px; margin: 0 auto; }
   .tabbar { max-width: 640px; margin: 0 auto; box-shadow: inset 0 .5px 0 var(--line), 0 0 0 1px var(--line); }
+}
+
+/* ============================================================
+   Frosted-glass material + tactile layer
+   Glass needs something behind it to blur, so the app sits on a
+   fixed sky-blue wash; every panel is translucent on top of it.
+   ============================================================ */
+body::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background: var(--wash);
+}
+.app { position: relative; z-index: 1; background: transparent; }
+
+.card,
+.list,
+.stat,
+.today-head,
+.flash {
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+.card.tight { background: var(--glass); }
+.card.flat { background: color-mix(in srgb, var(--glass) 78%, transparent); }
+.appbar,
+.tabbar {
+  background: var(--bg-blur);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+}
+.sheet {
+  background: var(--glass-strong);
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+}
+.sheet__body { background: transparent; }
+.chip {
+  background: color-mix(in srgb, var(--glass) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+}
+.chip.on { background: var(--tint-soft); }
+.seg { background: color-mix(in srgb, var(--glass) 70%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.seg__item.on { background: var(--glass-strong); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.opt,
+.tile {
+  background: color-mix(in srgb, var(--glass) 92%, transparent);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+}
+.iconbtn { background: color-mix(in srgb, var(--glass) 86%, transparent); }
+.toast { background: color-mix(in srgb, #0A1626 86%, transparent); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+.today-head { background: linear-gradient(178deg, color-mix(in srgb, var(--tint) 16%, transparent) 0%, var(--glass) 62%); }
+
+/* ---- tactile (Duolingo-style) press: a bottom edge the button sinks into ---- */
+.btn.primary,
+.btn.coral,
+.btn.chunky {
+  box-shadow: 0 4px 0 var(--edge, var(--tint-edge)), 0 12px 26px -18px var(--tint);
+  transition: transform 90ms var(--ease-out), box-shadow 90ms var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.btn.primary:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--tint-edge); }
+.btn.coral { --edge: color-mix(in srgb, var(--red) 70%, #000); }
+.btn.coral:active { transform: translateY(3px); box-shadow: 0 1px 0 color-mix(in srgb, var(--red) 70%, #000); }
+.btn.ghost,
+.btn.soft,
+.btn:not(.primary):not(.coral):not(.chunky) {
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--line-2) 70%, transparent);
+}
+.btn.ghost:active,
+.btn.soft:active,
+.btn:not(.primary):not(.coral):not(.chunky):active { transform: translateY(2px); box-shadow: 0 0 0 transparent; }
+.opt { box-shadow: 0 3px 0 color-mix(in srgb, var(--line-2) 62%, transparent), inset 0 0 0 1.5px var(--line); }
+.opt:active { transform: translateY(2px); box-shadow: 0 1px 0 color-mix(in srgb, var(--line-2) 62%, transparent), inset 0 0 0 1.5px var(--line); }
+.opt.ok { box-shadow: 0 3px 0 color-mix(in srgb, var(--green) 62%, transparent), inset 0 0 0 1.5px var(--green); }
+.opt.no { box-shadow: 0 3px 0 color-mix(in srgb, var(--red) 62%, transparent), inset 0 0 0 1.5px var(--red); }
+.tile { box-shadow: 0 3px 0 color-mix(in srgb, var(--line-2) 62%, transparent), inset 0 0 0 1.5px var(--line); }
+.tile:active { transform: translateY(2px); box-shadow: 0 1px 0 color-mix(in srgb, var(--line-2) 62%, transparent); }
+
+/* ---- answer feedback bar: the lesson rhythm ---- */
+.feedback {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 58;
+  padding: var(--s4) var(--gutter) calc(var(--s4) + var(--safe-b));
+  background: color-mix(in srgb, var(--green-soft) 82%, var(--surface));
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: inset 0 .5px 0 rgba(255, 255, 255, .5), 0 -14px 40px -26px rgba(12, 40, 80, .5);
+  transform: translate3d(0, 110%, 0);
+  transition: transform var(--t-slow) var(--ease-ios);
+  animation: none;
+}
+.feedback.show { transform: translate3d(0, 0, 0); }
+.feedback.no { background: color-mix(in srgb, var(--red-soft) 84%, var(--surface)); }
+.feedback__head { display: flex; align-items: center; gap: var(--s2); }
+.feedback__title { font-size: var(--fs-headline); font-weight: 680; }
+.feedback.ok .feedback__title { color: var(--green); }
+.feedback.no .feedback__title { color: var(--red); }
+.feedback__body { margin-top: var(--s2); font-size: var(--fs-footnote); color: var(--ink-2); }
+.feedback__actions { display: flex; gap: var(--s2); margin-top: var(--s3); }
+body.feedback-open .tabbar { transform: translate3d(0, 110%, 0); }
+.tabbar { transition: transform var(--t-base) var(--ease-ios); }
+
+/* ---- mascot: 小语，一只会讲话的气泡 ---- */
+.mascot { display: block; }
+.mascot--idle { animation: mascotBob 3.4s var(--ease-in-out) infinite; }
+.mascot--happy { animation: mascotPop 620ms var(--ease-ios) both; }
+@keyframes mascotBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes mascotPop { 0% { transform: scale(.86); } 62% { transform: scale(1.06); } 100% { transform: scale(1); } }
+
+/* ---- lesson path (map) ---- */
+.path { position: relative; padding: var(--s2) 0 var(--s3); }
+.path__line {
+  position: absolute; left: 50%; top: 18px; bottom: 18px; width: 3px; margin-left: -1.5px;
+  border-radius: 2px; background: linear-gradient(180deg, var(--tint-soft), var(--surface-2));
+}
+.path__node {
+  position: relative; display: flex; align-items: center; gap: var(--s3);
+  padding: var(--s2) 0;
+}
+.path__node:nth-child(even) { flex-direction: row-reverse; text-align: right; }
+.path__bubble {
+  flex: none; width: 56px; height: 56px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--glass-strong);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--line-2) 60%, transparent), inset 0 0 0 1.5px var(--line);
+  color: var(--muted);
+  font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.path__node.done .path__bubble { background: var(--tint); color: #fff; box-shadow: 0 4px 0 var(--tint-edge); }
+.path__node.today .path__bubble { background: var(--tint); color: #fff; box-shadow: 0 0 0 6px var(--tint-soft), 0 4px 0 var(--tint-edge); }
+.path__meta { flex: 1; min-width: 0; }
+.path__title { font-size: var(--fs-footnote); font-weight: 620; }
+.path__sub { font-size: var(--fs-caption); color: var(--muted); margin-top: 1px; }
+.path__node.locked .path__bubble { opacity: .55; }
+
+/* ---- celebration ---- */
+.celebrate { display: grid; justify-items: center; gap: var(--s3); text-align: center; }
+.celebrate__xp {
+  font-size: 46px; font-weight: 780; letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tint);
+}
+.celebrate__label { font-size: var(--fs-caption); font-weight: 620; color: var(--muted); letter-spacing: .02em; }
+.celebrate__stars { display: flex; gap: 6px; }
+.celebrate__stars svg { width: 26px; height: 26px; }
+.celebrate__stars .on { color: #FFC53D; fill: currentColor; }
+.celebrate__stars .off { color: var(--line-2); }
+
+/* ---- transparency / blur fallbacks ---- */
+@media (prefers-reduced-transparency: reduce) {
+  :root { --glass: var(--surface); --glass-strong: var(--surface); --bg-blur: var(--bg); }
+  body::before { display: none; }
+  .card, .list, .stat, .today-head, .flash, .appbar, .tabbar, .sheet, .chip, .seg, .opt, .tile, .iconbtn, .feedback {
+    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root { --glass: var(--surface); --glass-strong: var(--surface); }
 }
