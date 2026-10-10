@@ -376,7 +376,7 @@ export const mountSpell = (root, { rerender }) => {
     if (!val) return;
     const ok = val === w.en.toLowerCase();
     recordAnswer(ok, w.id);
-    if (ok) { st.ok++; toast('正确！', 'circle-check'); say(w.en); }
+    if (ok) { st.ok++; toast('拼写正确', 'circle-check'); say(w.en); }
     else { toast(`正确拼写：${w.en}`, 'circle-x'); gradeCard(w.id, 0); }
     st.idx++; st.input = ''; st.showHint = false;
     addXP(ok ? 12 : 3, 'spell');

@@ -5,7 +5,7 @@ import {
   load, getState, save, updateSettings, updateProfile, planDay, taskDone,
   evaluateBadges, subscribe, addXP, markTask, touchDay, BADGES,
 } from './core/store.js';
-import { loadVoices } from './core/speech.js';
+import { loadVoices, primeTTS } from './core/speech.js';
 import { initTap } from './core/tap.js';
 import { stats as contentStats, planForDay, deckById } from './data/index.js';
 
@@ -166,6 +166,9 @@ const draw = () => {
   try { route.prepare?.(); } catch (e) { console.error('[prepare]', e); }
   v.innerHTML = route.render();
   window.scrollTo({ top: 0 });
+  // one orchestrated entrance per navigation (never on in-place re-renders)
+  v.classList.add('view--enter');
+  setTimeout(() => v.classList.remove('view--enter'), 700);
 
   const ctx = { nav, rerender: () => { v.innerHTML = route.render(); bindView(route, v, ctx); }, replace: (html) => { v.innerHTML = html; bindView(route, v, ctx); } };
   bindView(route, v, ctx);
@@ -188,7 +191,7 @@ const drawTabs = (active, r) => {
   tb.innerHTML = TABS.map((t) => {
     const on_ = t.id === active || (active === 'learn' && t.id === 'learn');
     return `<button class="tabbar__item ${on_ ? 'on' : ''}" data-nav="${t.href}">
-      ${icon(t.ico)}<span>${t.label}</span>
+      <span class="tabbar__ico">${icon(t.ico)}</span><span>${t.label}</span>
       ${t.id === 'games' && !taskDone('game') ? '<span class="tabbar__badge">!</span>' : ''}
     </button>`;
   }).join('');
@@ -392,6 +395,9 @@ const watchBadges = () => {
 const boot = async () => {
   load();
   bindGlobal();
+  // 第一次触摸/点击时解锁语音引擎（iOS 要求）
+  document.addEventListener('pointerdown', () => primeTTS(), { once: true, passive: true });
+  document.addEventListener('touchend', () => primeTTS(), { once: true, passive: true });
   await loadVoices().catch(() => {});
   if (!getState().profile.onboarded) {
     renderOnboarding();
@@ -400,6 +406,7 @@ const boot = async () => {
     draw();
     checkReminder();
   }
+  hideBoot();
   watchBadges();
   setInterval(watchBadges, 30000);
 
@@ -435,6 +442,15 @@ const boot = async () => {
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) { watchBadges(); stopSpeak?.(); }
   });
+};
+
+const hideBoot = () => {
+  const b = document.getElementById('boot');
+  if (!b) return;
+  setTimeout(() => {
+    b.classList.add('gone');
+    setTimeout(() => b.remove(), 420);
+  }, 120);
 };
 
 let stopSpeak;

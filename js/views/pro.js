@@ -21,12 +21,25 @@ export const renderPro = () => {
   const s = getState();
   return `
   <section class="section" style="margin-top:4px">
-    <div class="hero" style="background:linear-gradient(160deg,var(--violet) 0%,color-mix(in srgb,var(--violet) 62%, #221B4D) 100%)">
-      <div class="hero__flash">PRO</div>
-      <div style="position:relative;z-index:1">
-        <div class="hero__k">专业英语 · 面向客户沟通</div>
-        <div class="hero__v" style="font-size:23px">江森自控业务英语训练</div>
-        <div class="tiny" style="opacity:.9;margin-top:6px">从术语到讲解，从方案到汇报。先能讲清楚，再谈流利。</div>
+    <div class="today-head" style="background:linear-gradient(178deg,var(--cat-bas-soft) 0%,var(--surface) 62%)">
+      <div class="today-head__eyebrow" style="color:var(--cat-bas)">专业英语 · 面向客户沟通</div>
+      <div class="today-head__title balance" style="font-size:var(--fs-title1)">暖通空调与楼宇自控</div>
+      <div class="today-head__sub pretty">从基础概念到能对外讲解。先能讲清楚，再谈流利。</div>
+      <div class="today-head__row">
+        <div class="today-head__stats">
+          <div class="today-stat">
+            <div class="today-stat__v">${(WORDS_BY_DECK.hvac || []).length + (WORDS_BY_DECK.bas || []).length}</div>
+            <div class="today-stat__k">专业术语</div>
+          </div>
+          <div class="today-stat">
+            <div class="today-stat__v">${CONCEPTS.length}</div>
+            <div class="today-stat__k">原理卡</div>
+          </div>
+          <div class="today-stat">
+            <div class="today-stat__v">${TALKS.length}</div>
+            <div class="today-stat__k">讲解话术</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>

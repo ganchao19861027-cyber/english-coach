@@ -89,16 +89,23 @@ export const renderPlan = () => {
   const day = planDay();
   return `
   <section class="section" style="margin-top:4px">
-    <div class="hero">
-      <div class="hero__flash">180</div>
-      <div class="row" style="position:relative;z-index:1">
-        <div style="flex:1">
-          <div class="hero__k">学习计划总览</div>
-          <div class="hero__v">第 ${day} 天 / 共 180 天</div>
-          <div class="tiny" style="opacity:.88;margin-top:6px">开始日期 ${esc(getState().profile.startDate)} · 完成约 ${Math.round((day / 180) * 100)}%</div>
+    <div class="today-head">
+      <div class="today-head__eyebrow">学习计划总览</div>
+      <div class="today-head__title">第 ${day} 天</div>
+      <div class="today-head__sub">共 180 天 · 已完成 ${Math.round((day / 180) * 100)}% · 开始于 ${esc(getState().profile.startDate)}</div>
+      <div class="today-head__row">
+        ${ring({ value: day / 180, size: 58, stroke: 6, label: `${Math.round((day / 180) * 100)}%` })}
+        <div class="today-head__stats">
+          <div class="today-stat">
+            <div class="today-stat__v">${esc(planForDay(day).phase.name)}</div>
+            <div class="today-stat__k">当前阶段</div>
+          </div>
+          <div class="today-stat">
+            <div class="today-stat__v">第 ${planForDay(day).week} 周</div>
+            <div class="today-stat__k">26 周计划</div>
+          </div>
         </div>
       </div>
-      <div style="margin-top:12px;position:relative;z-index:1">${bar(day / 180)}</div>
     </div>
   </section>
   ${PHASES.map((p) => {

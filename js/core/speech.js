@@ -57,8 +57,25 @@ export const pickVoice = (wantURI, accent = 'en-US') => {
 };
 
 let currentUtter = null;
+let speakToken = 0;
+let primed = false;
+
+/* iOS/Safari 必须在用户手势里"解锁"语音；同时 cancel() 与 speak() 同帧调用会静默失败 */
+export const primeTTS = () => {
+  if (!ttsSupported || primed) return;
+  primed = true;
+  try { speechSynthesis.resume(); } catch {}
+  try {
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0;
+    u.rate = 2;
+    u.lang = 'en-US';
+    speechSynthesis.speak(u);
+  } catch {}
+};
 
 export const stopSpeak = () => {
+  speakToken++;
   if (!ttsSupported) return;
   try { speechSynthesis.cancel(); } catch {}
   currentUtter = null;
@@ -66,17 +83,40 @@ export const stopSpeak = () => {
 
 export const speak = (text, { rate = 0.95, accent = 'en-US', voiceURI = '', onEnd, pitch = 1 } = {}) => {
   if (!ttsSupported || !text) { onEnd?.(); return Promise.resolve(); }
-  stopSpeak();
+  const my = ++speakToken;
   return new Promise((resolve) => {
-    const u = new SpeechSynthesisUtterance(String(text));
-    const v = pickVoice(voiceURI, accent);
-    if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = accent; }
-    u.rate = rate;
-    u.pitch = pitch;
-    u.onend = () => { currentUtter = null; onEnd?.(); resolve(); };
-    u.onerror = () => { currentUtter = null; onEnd?.(); resolve(); };
-    currentUtter = u;
-    try { speechSynthesis.speak(u); } catch { resolve(); }
+    const finish = () => { if (my === speakToken) currentUtter = null; onEnd?.(); resolve(); };
+    const start = () => {
+      if (my !== speakToken) { onEnd?.(); resolve(); return; }
+      const u = new SpeechSynthesisUtterance(String(text));
+      const v = pickVoice(voiceURI, accent);
+      if (v) { u.voice = v; u.lang = v.lang; } else { u.lang = accent; }
+      u.rate = rate;
+      u.pitch = pitch;
+      u.volume = 1;
+      u.onend = finish;
+      u.onerror = finish;
+      currentUtter = u;
+      try {
+        speechSynthesis.resume();
+        speechSynthesis.speak(u);
+      } catch { finish(); return; }
+      // 看门狗：个别 iOS 版本第一次会静默失败，稍后重试一次
+      setTimeout(() => {
+        if (my !== speakToken) return;
+        if (!speechSynthesis.speaking && !speechSynthesis.pending) {
+          try { speechSynthesis.resume(); speechSynthesis.speak(u); } catch {}
+        }
+      }, 380);
+      // 兜底：无论引擎是否回调，最多 20 秒后释放
+      setTimeout(() => { if (my === speakToken) finish(); }, Math.min(20000, 2500 + String(text).length * 90));
+    };
+    if (speechSynthesis.speaking || speechSynthesis.pending) {
+      try { speechSynthesis.cancel(); } catch {}
+      setTimeout(start, 120); // 关键：不在 cancel 的同一帧调用 speak
+    } else {
+      start();
+    }
   });
 };
 

@@ -3,7 +3,7 @@ import { icon, ring, bar, section, toast } from '../core/ui.js';
 import { esc, fmtDate, dayKey, pct } from '../core/util.js';
 import {
   getState, levelInfo, levelTitle, planDay, taskDone, markTask,
-  dueList, todayRec,
+  dueList, todayRec, planDayDate,
 } from '../core/store.js';
 import { DIALOGUES, PATTERNS, WORDS_BY_DECK, planForDay, deckById } from '../data/index.js';
 import { renderSentence } from '../core/tap.js';
@@ -15,7 +15,15 @@ const TASK_DEFS = (ctx) => {
     { id: 'new', title: `学习 ${phase.id <= 2 ? 6 : 5} 个新词`, sub: `${deckById(phase.decks[0])?.name} · 第 ${day} 天`, ico: 'book-open', tone: 'p', go: '#/words/learn', min: 8 },
     { id: 'shadow', title: '跟读训练 5 句', sub: '先听再读，目标 85 分以上', ico: 'mic', tone: 'v', go: '#/speak/shadow', min: 8 },
     { id: 'dialogue', title: dialogue.title, sub: `场景对话 · ${dialogue.titleEn}`, ico: 'messages-square', tone: 'c', go: `#/speak/${dialogue.id}`, min: 10 },
-    { id: 'game', title: '闯关挑战', sub: '混合题型，赢经验值', ico: 'gamepad-2', tone: 'a', go: '#/games/speed', min: 5 },
+    {
+      id: 'game',
+      title: day % 7 === 0 ? '极速抢答挑战' : '听音闯关',
+      sub: day % 7 === 0 ? '60 秒混合题型，考验反应' : '点喇叭听发音，选出正确意思',
+      ico: day % 7 === 0 ? 'timer' : 'headphones',
+      tone: 'a',
+      go: day % 7 === 0 ? '#/games/speed' : '#/games/listen',
+      min: 5,
+    },
   ];
   if (phase.pro) list.push({ id: 'pro', title: phase.id >= 5 ? '专业模块训练' : '商务与专业热身', sub: phase.id >= 5 ? (phase.id === 5 ? '暖通空调专业英语' : '楼宇自控与方案汇报') : '产品讲解与客户沟通', ico: phase.id >= 5 ? (phase.id === 5 ? 'wind' : 'cpu') : 'briefcase', tone: 'g', go: phase.id >= 5 ? `#/pro/${phase.id === 5 ? 'hvac' : 'bas'}` : '#/pro/talks', min: 12 });
   return list;
@@ -37,27 +45,38 @@ export const render = () => {
   const totalMin = tasks.reduce((n, t) => n + t.min, 0);
   const quote = PATTERNS[(day * 7) % PATTERNS.length];
   const learnedCount = Object.keys(s.words.learned).length;
+  const weekStart = Math.floor((day - 1) / 7) * 7 + 1;
+  const weekDays = Array.from({ length: 7 }, (_, i) => weekStart + i).filter((d) => d <= 180);
 
   return `
-  <div class="hero">
-    <div class="hero__flash">${day}</div>
-    <div class="hero__row">
-      ${ring({ value: doneCount / tasks.length, size: 68, stroke: 7, color: '#fff', track: 'rgba(255,255,255,.22)', label: '' })}
-      <div style="flex:1;min-width:0">
-        <div class="hero__k">第 ${day} / 180 天 · ${esc(plan.theme)}</div>
-        <div class="hero__v">${doneCount} / ${tasks.length} 项任务</div>
-        <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">
-          <span class="hero__pill">${icon('flame')}连续 ${s.stats.streak} 天</span>
-          <span class="hero__pill">${icon('zap')}${s.stats.xp} XP · Lv.${lv.level}</span>
+  <div class="today-head">
+    <div class="today-head__eyebrow">第 ${day} / 180 天 · ${esc(phase.name)}</div>
+    <div class="today-head__title balance">${esc(plan.theme)}</div>
+    <div class="today-head__sub pretty">${esc(plan.focus)} · 今天约 ${totalMin} 分钟</div>
+    <div class="today-head__row">
+      ${ring({ value: doneCount / tasks.length, size: 62, stroke: 6, label: `${doneCount}/${tasks.length}` })}
+      <div class="today-head__stats">
+        <div class="today-stat">
+          <div class="today-stat__v">${s.stats.streak}</div>
+          <div class="today-stat__k">连续天数</div>
+        </div>
+        <div class="today-stat">
+          <div class="today-stat__v">${s.stats.xp}</div>
+          <div class="today-stat__k">经验值</div>
+        </div>
+        <div class="today-stat">
+          <div class="today-stat__v">Lv.${lv.level}</div>
+          <div class="today-stat__k">${esc(levelTitle(lv.level))}</div>
         </div>
       </div>
     </div>
-    <div style="margin-top:14px;position:relative;z-index:1">
-      <div class="row" style="font-size:12.5px;opacity:.9;font-weight:600">
-        <span>今日目标约 ${totalMin} 分钟</span>
-        <span class="spacer"></span>
-        <span>${esc(phase.name)} · 第 ${plan.week} 周</span>
-      </div>
+    <div class="week-strip">
+      ${weekDays.map((d) => {
+        const rec = s.days[planDayDate(d)];
+        const done = rec && Object.keys(rec.tasks || {}).length > 0;
+        const cls = d === day ? 'today' : done ? 'done past' : d < day ? 'past' : '';
+        return `<div class="week-strip__day ${cls}"><b>${d}</b><i></i></div>`;
+      }).join('')}
     </div>
   </div>
 

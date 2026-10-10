@@ -1,5 +1,5 @@
 /* 英语教练 · Service Worker：离线优先 + 内容更新 */
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 const CACHE = `ec-${VERSION}`;
 
 const ASSETS = [
@@ -17,6 +17,7 @@ const ASSETS = [
   './js/core/games.js',
   './js/core/tap.js',
   './js/data/index.js',
+  './js/data/dict-pack.js',
   './js/data/vocab-core.js',
   './js/data/vocab-work.js',
   './js/data/vocab-hvac.js',

@@ -325,7 +325,7 @@ export const openShadow = (en, zh = '', onDone) => {
           if (good) { celebrate(recBtn); close(); }
           else { res.innerHTML = ''; recBtn.click(); }
         };
-        stat.textContent = good ? '很棒，继续保持！' : '再听一遍标准音，注意重音和停顿。';
+        stat.textContent = good ? '读得不错，继续下一句' : '再听一遍标准音，注意重音和停顿。';
       };
       recBtn.onclick = async () => {
         if (rec) { await stopRec(); return; }

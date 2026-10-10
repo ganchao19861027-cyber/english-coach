@@ -4,6 +4,7 @@ import { WORK_RAW } from './vocab-work.js';
 import { HVAC_RAW } from './vocab-hvac.js';
 import { BAS_RAW } from './vocab-bas.js';
 import { EXTRA } from './dict-extra.js';
+import { DICT_PACK } from './dict-pack.js';
 import { DIALOGUES_LIFE } from './dialogues.js';
 import { DIALOGUES_PRO } from './dialogues-pro.js';
 import { PATTERNS, DRILLS } from './patterns.js';
@@ -55,11 +56,32 @@ for (const w of WORDS) {
 }
 for (const [en, zh] of EXTRA) put(en, { en, zh, gloss: zh, pos: '—', ipa: '' });
 for (const p of PATTERNS) put(p[0], { en: p[0], zh: p[1], gloss: p[1], pos: 'phr.', ipa: '', pattern: true });
+for (const [abbr, full, zh] of ACRONYMS) {
+  put(abbr, { en: abbr, zh, gloss: zh, pos: '缩写', ipa: '', abbr: full });
+  put(full, { en: full, zh, gloss: zh, pos: 'n.', ipa: '' });
+}
+
+/* 内置大词典（约 7800 词，含美音音标与中文释义） */
+for (const line of DICT_PACK.split('\n')) {
+  const [w, ipa, zh] = line.split('|');
+  if (!w || !zh) continue;
+  put(w, { en: w, ipa: ipa ? '/' + ipa.replace(/^\/|\/$/g, '') + '/' : '', zh, gloss: zh, pos: '', bulk: true });
+}
 
 export const lookup = (token) => {
   for (const cand of lemmaCandidates(token)) {
     const hit = DICT.get(cand);
     if (hit) return { ...hit, matched: cand, original: normWord(token) };
+  }
+  // 复合词兜底：dry-bulb → dry-bulb / dry / bulb
+  const raw = normWord(token);
+  if (raw.includes('-')) {
+    for (const part of raw.split('-').filter((p) => p.length > 1)) {
+      for (const cand of lemmaCandidates(part)) {
+        const hit = DICT.get(cand);
+        if (hit) return { ...hit, matched: cand, original: raw, compound: true };
+      }
+    }
   }
   return null;
 };

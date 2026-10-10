@@ -89,20 +89,35 @@ const IRREG = {
 export const lemmaCandidates = (word) => {
   const w = normWord(word);
   const out = new Set([w]);
+  const undouble = (s) => (/[b-df-hj-np-tvz]$/.test(s) && s.length > 2 && s[s.length - 1] === s[s.length - 2] ? s.slice(0, -1) : null);
   if (!w) return [];
   if (IRREG[w]) out.add(IRREG[w]);
   if (w.endsWith("'s")) out.add(w.slice(0, -2));
   if (w.endsWith('ies') && w.length > 4) out.add(w.slice(0, -3) + 'y');
   if (w.endsWith('es') && w.length > 3) out.add(w.slice(0, -2));
   if (w.endsWith('s') && w.length > 3) out.add(w.slice(0, -1));
-  if (w.endsWith('ed') && w.length > 4) { out.add(w.slice(0, -2)); out.add(w.slice(0, -1)); }
+  if (w.endsWith('ed') && w.length > 4) {
+    out.add(w.slice(0, -2));
+    out.add(w.slice(0, -1));
+    const d = undouble(w.slice(0, -2));
+    if (d) out.add(d);
+  }
   if (w.endsWith('ing') && w.length > 5) {
     out.add(w.slice(0, -3));
     out.add(w.slice(0, -3) + 'e');
-    if (/([b-df-hj-np-tv-z])\1$/.test(w.slice(0, -3))) out.add(w.slice(0, -4));
+    const d = undouble(w.slice(0, -3));
+    if (d) out.add(d);
   }
-  if (w.endsWith('er') && w.length > 4) out.add(w.slice(0, -2));
-  if (w.endsWith('est') && w.length > 5) out.add(w.slice(0, -3));
+  if (w.endsWith('er') && w.length > 4) {
+    out.add(w.slice(0, -2));
+    const d = undouble(w.slice(0, -2));
+    if (d) out.add(d);
+  }
+  if (w.endsWith('est') && w.length > 5) {
+    out.add(w.slice(0, -3));
+    const d = undouble(w.slice(0, -3));
+    if (d) out.add(d);
+  }
   if (w.endsWith('ly') && w.length > 4) out.add(w.slice(0, -2));
   return [...out];
 };

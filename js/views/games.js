@@ -97,8 +97,8 @@ export const renderGame = () => {
     return `${header()}
     <div class="card" style="margin-top:14px;text-align:center;padding:24px 14px">
       <button class="iconbtn lg on" style="margin:0 auto" data-play>${icon('volume-2')}</button>
-      <div class="small muted" style="margin-top:12px">听发音，选出正确意思</div>
-      <div class="tiny muted" style="margin-top:4px">${esc(q.word?.ipa || '')} · ${esc(q.word?.pos || '')}</div>
+      <div class="small muted" style="margin-top:12px">点喇叭听发音，选出正确意思</div>
+      <div class="tiny muted" style="margin-top:4px">${game.answered ? esc(q.word?.ipa || '') + ' · ' + esc(q.word?.pos || '') : '答案揭晓前不显示拼写'}</div>
     </div>
     <div style="margin-top:14px">${q.options.map((o, i) => optionHtml(o, i)).join('')}</div>
     ${afterHtml(q)}`;
