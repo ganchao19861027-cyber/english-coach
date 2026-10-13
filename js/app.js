@@ -9,6 +9,7 @@ import { loadVoices, primeTTS } from './core/speech.js';
 import { warmAudio } from './core/audio.js';
 import { initTap } from './core/tap.js';
 import { stats as contentStats, planForDay, deckById } from './data/index.js';
+import { lessonById } from './data/courses.js';
 
 import * as Today from './views/today.js';
 import * as Learn from './views/learn.js';
@@ -16,6 +17,7 @@ import * as Speak from './views/speak.js';
 import * as Words from './views/words.js';
 import * as Games from './views/games.js';
 import * as Pro from './views/pro.js';
+import * as Courses from './views/courses.js';
 import * as Me from './views/me.js';
 
 const TABS = [
@@ -24,6 +26,7 @@ const TABS = [
   { id: 'speak', label: '口语', ico: 'message-square-quote', href: '#/speak' },
   { id: 'words', label: '单词', ico: 'layers', href: '#/words' },
   { id: 'games', label: '闯关', ico: 'gamepad-2', href: '#/games' },
+  { id: 'courses', label: '专业', ico: 'graduation-cap', href: '#/courses' },
 ];
 
 const view = () => $('#view');
@@ -42,6 +45,7 @@ const TITLES = {
   speak: ['口语', '场景对话 · 跟读评分'],
   words: ['单词', '间隔重复记忆'],
   games: ['闯关', '趣味做题'],
+  courses: ['专业课程', 'HVAC · BAS 工程师之路'],
   pro: ['专业英语', 'HVAC · BAS'],
   me: ['我的', '进度与设置'],
   search: ['查词', '中英互查'],
@@ -106,6 +110,23 @@ const routeToView = (r) => {
         title: ['闯关', b === 'daily' ? '每日挑战' : ''],
       };
       return { node: Games, render: () => Games.renderIndex(), mount: () => {}, tab: 'games', title: TITLES.games };
+    }
+    case 'courses': {
+      if (b === 'lesson' && c) {
+        const lesson = lessonById(c);
+        return {
+          node: Courses,
+          prepare: () => Courses.prepareLesson(c),
+          render: () => Courses.renderLesson(c),
+          mount: (root, ctx) => Courses.mountLesson(root, ctx),
+          tab: 'courses',
+          title: lesson ? [lesson.title, lesson.titleEn] : ['专业课程', ''],
+        };
+      }
+      if (b === 'hvac' || b === 'bas') {
+        return { node: Courses, render: () => Courses.renderTrack(b), mount: (root, ctx) => Courses.mountTrack(root, ctx), tab: 'courses', title: [b === 'hvac' ? '暖通空调' : '楼宇自控', '18 节 · 6 级 · 从基础到精通'] };
+      }
+      return { node: Courses, render: () => Courses.renderCourses(), mount: (root, ctx) => Courses.mountCourses(root, ctx), tab: 'courses', title: TITLES.courses };
     }
     case 'pro': {
       if (b === 'talks') return { node: Pro, render: () => Pro.renderArea('hvac', 'talk'), mount: (root, ctx) => Pro.mountPro(root, ctx), tab: 'pro', title: ['讲解话术', '实战演练'] };

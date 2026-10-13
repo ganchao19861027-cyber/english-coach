@@ -3,7 +3,7 @@ import { icon, ring, bar, section, toast, mascot } from '../core/ui.js';
 import { esc, fmtDate, dayKey, pct } from '../core/util.js';
 import {
   getState, levelInfo, levelTitle, planDay, taskDone, markTask,
-  dueList, todayRec, planDayDate,
+  dueList, todayRec, planDayDate, courseDoneCount,
 } from '../core/store.js';
 import { DIALOGUES, PATTERNS, WORDS_BY_DECK, planForDay, deckById } from '../data/index.js';
 import { renderSentence } from '../core/tap.js';
@@ -45,6 +45,7 @@ export const render = () => {
   const totalMin = tasks.reduce((n, t) => n + t.min, 0);
   const quote = PATTERNS[(day * 7) % PATTERNS.length];
   const learnedCount = Object.keys(s.words.learned).length;
+  const courseDone = courseDoneCount();
   const weekStart = Math.floor((day - 1) / 7) * 7 + 1;
   const weekDays = Array.from({ length: 7 }, (_, i) => weekStart + i).filter((d) => d <= 180);
 
@@ -82,6 +83,21 @@ export const render = () => {
   </div>
 
   <section class="section">
+    <button class="card press" data-nav="#/courses" style="width:100%;text-align:left">
+      <div class="row">
+        <span class="stat__ico" style="background:var(--cat-bas-soft);color:var(--cat-bas);margin:0">${icon('graduation-cap')}</span>
+        <div style="flex:1;min-width:0">
+          <div class="small" style="font-weight:700">专业课程：暖通空调 + 楼宇自控</div>
+          <div class="tiny muted" style="margin-top:2px">36 节课 · 6 级进阶 · 从零基础到能对外讲解</div>
+        </div>
+        ${icon('chevron-right', 'chev')}
+      </div>
+      <div class="row tiny muted" style="margin-top:10px"><span>已完成 ${courseDone}/36 课</span><span class="spacer"></span><span>${Math.round((courseDone / 36) * 100)}%</span></div>
+      <div style="margin-top:6px">${bar(courseDone / 36)}</div>
+    </button>
+  </section>
+
+  <section class="section">
     <div class="section__head">
       <h2 class="section__title">今日任务</h2>
       <span class="section__more" data-nav="#/learn/plan">学习计划${icon('chevron-right')}</span>
@@ -114,7 +130,7 @@ export const render = () => {
         { go: '#/words/review', ico: 'repeat', tone: 'b', label: '复习' },
         { go: '#/speak', ico: 'messages-square', tone: 'c', label: '场景' },
         { go: '#/games', ico: 'gamepad-2', tone: 'a', label: '闯关' },
-        { go: '#/pro', ico: 'briefcase', tone: 'g', label: '专业' },
+        { go: '#/courses', ico: 'graduation-cap', tone: 'g', label: '专业课' },
       ].map((q) => `<button class="card press tight" data-nav="${q.go}" style="text-align:center">
         <span class="stat__ico ${q.tone === 'b' ? '' : ''}" style="margin:0 auto 6px;background:var(--${q.tone === 'p' ? 'primary' : q.tone === 'a' ? 'amber' : q.tone === 'v' ? 'violet' : q.tone === 'c' ? 'coral' : q.tone === 'g' ? 'green' : 'blue'}-50);color:var(--${q.tone === 'p' ? 'primary' : q.tone === 'a' ? 'amber' : q.tone === 'v' ? 'violet' : q.tone === 'c' ? 'coral' : q.tone === 'g' ? 'green' : 'blue'})">${icon(q.ico)}</span>
         <span class="tiny" style="font-weight:650">${esc(q.label)}</span>

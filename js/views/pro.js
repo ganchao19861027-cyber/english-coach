@@ -1,7 +1,7 @@
 /* 专业板块：暖通空调（HVAC）与楼宇自控（BAS） */
 import { $, icon, bar, ring, sheet, toast, celebrate } from '../core/ui.js';
 import { esc, pct } from '../core/util.js';
-import { getState, addXP, markTask, touchDay, bumpProgress, deckStats, dueList, toggleStar } from '../core/store.js';
+import { getState, addXP, markTask, touchDay, bumpProgress, deckStats, dueList, toggleStar, courseDoneCount } from '../core/store.js';
 import {
   CONCEPTS, PRODUCTS, TALKS, FAQ, ACRONYMS, PRO_NOTE,
   WORDS_BY_DECK, DIALOGUES, dialoguesByCat, proSentences,
@@ -19,6 +19,7 @@ const AREAS = {
 
 export const renderPro = () => {
   const s = getState();
+  const courseDone = courseDoneCount();
   return `
   <section class="section" style="margin-top:4px">
     <div class="today-head" style="background:linear-gradient(178deg,var(--cat-bas-soft) 0%,var(--surface) 62%)">
@@ -42,6 +43,21 @@ export const renderPro = () => {
         </div>
       </div>
     </div>
+  </section>
+
+  <section class="section">
+    <button class="card press" data-nav="#/courses" style="width:100%;text-align:left;border:1.5px solid var(--tint)">
+      <div class="row">
+        <span class="list__ico v" style="width:44px;height:44px">${icon('graduation-cap')}</span>
+        <div style="flex:1;min-width:0">
+          <div class="small" style="font-weight:700">专业课程体系 · 36 节独立课程</div>
+          <div class="tiny muted" style="margin-top:3px">从零基础到工程师级：讲解 → 术语 → 句型 → 测验 → 英文讲解任务</div>
+        </div>
+        ${icon('chevron-right', 'chev')}
+      </div>
+      <div class="row tiny muted" style="margin-top:10px"><span>已完成 ${courseDone}/36 课</span><span class="spacer"></span><span>${Math.round((courseDone / 36) * 100)}%</span></div>
+      <div style="margin-top:6px">${bar(courseDone / 36, 'violet')}</div>
+    </button>
   </section>
 
   <section class="section">

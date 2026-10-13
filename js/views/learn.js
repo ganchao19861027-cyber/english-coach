@@ -1,7 +1,7 @@
 /* 学习：180 天计划、句型库、学习方法 */
 import { $, icon, bar, ring, sheet, toast } from '../core/ui.js';
 import { esc } from '../core/util.js';
-import { getState, planDay, planDayDate, taskDone, toggleStar, deckStats } from '../core/store.js';
+import { getState, planDay, planDayDate, taskDone, toggleStar, deckStats, courseDoneCount } from '../core/store.js';
 import { PHASES, WEEKS, PLAN_DAYS, planForDay, PATTERNS, PATTERN_TAGS, patternsByTag, METHODS, DRILLS, DECKS, WORDS, WORDS_BY_DECK } from '../data/index.js';
 import { speak } from '../core/speech.js';
 import { renderSentence } from '../core/tap.js';
@@ -31,6 +31,12 @@ export const renderLearn = () => {
   <section class="section">
     <div class="section__head"><h2 class="section__title">学习模块</h2></div>
     <div class="list">
+      <button class="list__row" data-nav="#/courses">
+        <span class="list__ico v">${icon('graduation-cap')}</span>
+        <span style="flex:1"><span class="list__title" style="display:block">专业课程（独立板块）</span>
+        <span class="list__sub" style="display:block">暖通空调 + 楼宇自控 · 36 节 · 已完成 ${courseDoneCount()}/36</span></span>
+        ${icon('chevron-right', 'chev')}
+      </button>
       <button class="list__row" data-nav="#/words">
         <span class="list__ico p">${icon('book-open')}</span>
         <span style="flex:1"><span class="list__title" style="display:block">词库与记忆卡</span>

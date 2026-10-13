@@ -6,6 +6,7 @@ import {
   resetAll, updateSettings, updateProfile, planDay, deckStats, save,
 } from '../core/store.js';
 import { WORDS, WORDS_BY_DECK, DECKS, stats as contentStats, PLAN_DAYS, DIALOGUES, METHODS, PATTERNS, CONCEPTS, TALKS, FAQ } from '../data/index.js';
+import { courseStats } from '../data/courses.js';
 import { loadVoices, getVoices, speak, ttsSupported, asrSupported, micSupported } from '../core/speech.js';
 import { clipState } from '../core/audio.js';
 
@@ -405,6 +406,7 @@ export const renderData = () => `
 /* ---------- 关于 / 安装指南 ---------- */
 export const renderAbout = () => {
   const cs = contentStats();
+  const cc = courseStats();
   return `
   <section class="section" style="margin-top:4px">
     <div class="card">
@@ -412,15 +414,16 @@ export const renderAbout = () => {
         <span class="list__ico p" style="width:48px;height:48px">${icon('graduation-cap')}</span>
         <div style="flex:1">
           <div class="small" style="font-weight:750">英语教练 · English Coach</div>
-          <div class="tiny muted" style="margin-top:2px">180 天口语与专业英语训练 · v1.0.0</div>
+          <div class="tiny muted" style="margin-top:2px">180 天口语与专业英语训练 · v1.3.0</div>
         </div>
       </div>
       <div class="grid c4" style="margin-top:14px;gap:8px">
         <div><div class="stat__v" style="font-size:17px">${cs.words}</div><div class="stat__k">词汇</div></div>
         <div><div class="stat__v" style="font-size:17px">${cs.dialogues}</div><div class="stat__k">场景</div></div>
         <div><div class="stat__v" style="font-size:17px">${cs.patterns}</div><div class="stat__k">句型</div></div>
-        <div><div class="stat__v" style="font-size:17px">${cs.concepts}</div><div class="stat__k">专业概念</div></div>
+        <div><div class="stat__v" style="font-size:17px">${cc.lessons}</div><div class="stat__k">专业课</div></div>
       </div>
+      <div class="tiny muted" style="margin-top:10px">专业课程 ${cc.terms} 个术语 · ${cc.quizzes} 道测验；另有 ${cs.concepts} 张概念卡与 ${cs.talks} 套讲解话术。</div>
     </div>
   </section>
 
@@ -453,6 +456,7 @@ export const renderAbout = () => {
       <div class="tiny muted" style="margin-top:8px;line-height:1.75">
         · 课程设计遵循<b>刻意练习</b>：明确目标、即时反馈、专注重复、难度递进。<br>
         · 单词采用<b>间隔重复（SRS）</b>，跟读提供逐句评分，复盘日用于巩固。<br>
+        · <b>专业课程</b>共 36 节（暖通空调 18 + 楼宇自控 18），分 6 级推进，每节固定五步：讲解 → 术语 → 句型 → 测验 → 英文讲解任务。<br>
         · 专业模块（暖通空调、楼宇自控）为通用行业英语学习资料，产品名称与参数请以厂商官方最新资料为准。<br>
         · 发音音频由本地神经语音引擎 <b>Piper</b>（MIT）配合 <b>LJSpeech</b>（公有领域）音色离线生成，可随应用分发；未收录的句子自动回退到系统语音。<br>
         · 语音朗读由系统语音引擎提供，离线可用；语音识别评分需要开启 iOS 键盘听写功能。

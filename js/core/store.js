@@ -285,6 +285,11 @@ export const BADGES = [
   { id: 'pro-hvac', name: '暖通入门', desc: '完成暖通空调基础模块', ico: 'wind', tone: 'b' },
   { id: 'pro-bas', name: '楼控入门', desc: '完成楼宇自控基础模块', ico: 'cpu', tone: 'v' },
   { id: 'pro-talk', name: '产品讲解员', desc: '完成 10 次专业讲解演练', ico: 'presentation', tone: 'b' },
+  { id: 'course-first', name: '专业启航', desc: '完成第一节专业课程', ico: 'graduation-cap', tone: 'b' },
+  { id: 'course-level', name: '学完一级', desc: '完成任意一级的全部课程', ico: 'layers', tone: 'g' },
+  { id: 'course-hvac', name: '暖通工程师', desc: '完成暖通空调 18 节课', ico: 'wind', tone: 'b' },
+  { id: 'course-bas', name: '楼控工程师', desc: '完成楼宇自控 18 节课', ico: 'cpu', tone: 'v' },
+  { id: 'course-all', name: '双领域专家', desc: '完成全部 36 节专业课程', ico: 'award', tone: 'a' },
   { id: 'xp-1000', name: '千点经验', desc: '累计获得 1000 XP', ico: 'zap', tone: 'a' },
   { id: 'xp-5000', name: '五千经验', desc: '累计获得 5000 XP', ico: 'sparkles', tone: 'a' },
   { id: 'perfect', name: '满分一天', desc: '一天内完成全部计划任务', ico: 'party-popper', tone: 'p' },
@@ -314,6 +319,20 @@ export const evaluateBadges = () => {
     'pro-hvac': () => !!s.progress?.hvacDone,
     'pro-bas': () => !!s.progress?.basDone,
     'pro-talk': () => (s.progress?.talks || 0) >= 10,
+    'course-first': () => courseDoneCount() >= 1,
+    'course-level': () => {
+      const done = Object.keys(courseMap());
+      for (const t of ['hvac', 'bas']) {
+        for (let lv = 1; lv <= 6; lv++) {
+          const ids = [0, 1, 2].map((k) => `${t}-${String((lv - 1) * 3 + k + 1).padStart(2, '0')}`);
+          if (ids.every((id) => done.includes(id))) return true;
+        }
+      }
+      return false;
+    },
+    'course-hvac': () => Object.keys(courseMap()).filter((id) => id.startsWith('hvac-')).length >= 18,
+    'course-bas': () => Object.keys(courseMap()).filter((id) => id.startsWith('bas-')).length >= 18,
+    'course-all': () => courseDoneCount() >= 36,
     'xp-1000': () => s.stats.xp >= 1000,
     'xp-5000': () => s.stats.xp >= 5000,
     perfect: () => !!s.progress?.perfectDay,
@@ -355,3 +374,22 @@ export const planDayDate = (n) => {
 };
 
 export const bumpProgress = (patch) => set((s) => { s.progress = { ...(s.progress || {}), ...patch }; }, 'progress', true);
+
+/* ---------- 专业课程进度 ---------- */
+export const courseMap = () => (state.progress && state.progress.courses) || {};
+export const lessonRecord = (id) => courseMap()[id] || null;
+export const courseDoneCount = (prefix = '') =>
+  Object.keys(courseMap()).filter((id) => id.startsWith(prefix)).length;
+export const markLessonDone = (id, stars = 3, score = 1) => {
+  set((s) => {
+    s.progress = s.progress || {};
+    s.progress.courses = s.progress.courses || {};
+    const prev = s.progress.courses[id];
+    s.progress.courses[id] = {
+      stars: Math.max(prev?.stars || 0, stars),
+      times: (prev?.times || 0) + 1,
+      best: Math.max(prev?.best || 0, score),
+      last: Date.now(),
+    };
+  }, 'progress', true);
+};
